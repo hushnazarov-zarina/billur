@@ -228,54 +228,32 @@ CREATE INDEX IF NOT EXISTS idx_bsj_retry    ON boxapp_sync_jobs(next_retry_at)
   WHERE sync_status IN ('pending','failed');
 
 -- ── New permissions ──────────────────────────────────────────────────────
-INSERT INTO permissions (id, name_uz, description) VALUES
-  ('production.qr.create',    'QR yaratish',                   'Production QR code yaratish'),
-  ('production.qr.scan',      'QR scan qilish',                'Stage scan (START/FINISH)'),
-  ('production.qr.override',  'Manual override',               'Adminga lock buzish huquqi'),
-  ('production.trace.view',   'Traceability ko''rish',         'QR/Box history ko''rish'),
-  ('payroll.view_own',        'O''z oyligini ko''rish',        'Worker o''z payrolli'),
-  ('payroll.view_all',        'Hamma payrollni ko''rish',      'HR/Admin'),
-  ('payroll.calculate',       'Payroll hisoblash',             'Period hisoblash'),
-  ('payroll.approve',         'Payroll tasdiqlash',            'Admin/Owner'),
-  ('piece_rates.read',        'Piece rates ko''rish',          ''),
-  ('piece_rates.update',      'Piece rates o''zgartirish',     ''),
-  ('workers.documents.view_own',  'O''z hujjatlarini ko''rish', ''),
-  ('workers.documents.view_all',  'Hamma hujjatlarni ko''rish', 'HR'),
-  ('workers.documents.upload',    'Hujjat yuklash',             ''),
-  ('boxapp.view',             'BoxApp ko''rish',               ''),
-  ('boxapp.sync',             'BoxApp sync qilish',            ''),
-  ('boxapp.retry',            'BoxApp failed retry',           '')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO permissions (id, resource, action, name_uz, description) VALUES
+  ('production.qr.create',    'production.qr',      'create',    'QR yaratish',                   'Production QR code yaratish'),
+  ('production.qr.scan',      'production.qr',      'scan',      'QR scan qilish',                'Stage scan (START/FINISH)'),
+  ('production.qr.override',  'production.qr',      'override',  'Manual override',               'Adminga lock buzish huquqi'),
+  ('production.trace.view',   'production.trace',   'view',      'Traceability ko''rish',         'QR/Box history ko''rish'),
 
--- Owner gets all new permissions
-INSERT INTO role_permissions (role_id, permission_id)
-SELECT 'owner', id FROM permissions
-WHERE id IN (
-  'production.qr.create','production.qr.scan','production.qr.override','production.trace.view',
-  'payroll.view_own','payroll.view_all','payroll.calculate','payroll.approve',
-  'piece_rates.read','piece_rates.update',
-  'workers.documents.view_own','workers.documents.view_all','workers.documents.upload',
-  'boxapp.view','boxapp.sync','boxapp.retry'
-)
-ON CONFLICT DO NOTHING;
+  ('payroll.view_own',        'payroll',            'view_own',  'O''z oyligini ko''rish',        'Worker o''z payrolli'),
+  ('payroll.view_all',        'payroll',            'view_all',  'Hamma payrollni ko''rish',      'HR/Admin'),
+  ('payroll.calculate',       'payroll',            'calculate', 'Payroll hisoblash',             'Period hisoblash'),
+  ('payroll.approve',         'payroll',            'approve',   'Payroll tasdiqlash',            'Admin/Owner'),
 
--- Stage worker roles get scan permission only on their stage
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  ('admin', 'production.qr.create'),
-  ('admin', 'production.qr.scan'),
-  ('admin', 'production.qr.override'),
-  ('admin', 'production.trace.view'),
-  ('admin', 'payroll.view_all'),
-  ('admin', 'payroll.calculate'),
-  ('admin', 'piece_rates.read'),
-  ('admin', 'piece_rates.update'),
-  ('admin', 'workers.documents.view_all'),
-  ('admin', 'workers.documents.upload'),
-  ('admin', 'boxapp.view'),
-  ('admin', 'boxapp.sync'),
-  ('admin', 'boxapp.retry')
-ON CONFLICT DO NOTHING;
+  ('piece_rates.read',        'piece_rates',        'read',      'Piece rates ko''rish',          ''),
+  ('piece_rates.update',      'piece_rates',        'update',    'Piece rates o''zgartirish',     ''),
 
+  ('workers.documents.view_own', 'workers.documents', 'view_own', 'O''z hujjatlarini ko''rish', ''),
+  ('workers.documents.view_all', 'workers.documents', 'view_all', 'Hamma hujjatlarni ko''rish', 'HR'),
+  ('workers.documents.upload',   'workers.documents', 'upload',   'Hujjat yuklash',             ''),
+
+  ('boxapp.view',             'boxapp',             'view',      'BoxApp ko''rish',               ''),
+  ('boxapp.sync',             'boxapp',             'sync',      'BoxApp sync qilish',            ''),
+  ('boxapp.retry',            'boxapp',             'retry',     'BoxApp failed retry',           '')
+ON CONFLICT (id) DO UPDATE SET
+  resource = EXCLUDED.resource,
+  action = EXCLUDED.action,
+  name_uz = EXCLUDED.name_uz,
+  description = EXCLUDED.description;
 
 -- ── Trigger to keep updated_at fresh ─────────────────────────────────────
 CREATE OR REPLACE FUNCTION trg_updated_at() RETURNS TRIGGER AS $$
