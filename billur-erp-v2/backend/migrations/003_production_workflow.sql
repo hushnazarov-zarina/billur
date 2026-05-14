@@ -271,6 +271,11 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
   ('admin', 'boxapp.retry')
 ON CONFLICT DO NOTHING;
 
+ALTER TABLE permissions
+ADD COLUMN IF NOT EXISTS name_uz TEXT,
+ADD COLUMN IF NOT EXISTS name_ru TEXT,
+ADD COLUMN IF NOT EXISTS name_en TEXT;
+
 -- ── Trigger to keep updated_at fresh ─────────────────────────────────────
 CREATE OR REPLACE FUNCTION trg_updated_at() RETURNS TRIGGER AS $$
 BEGIN NEW.updated_at = NOW(); RETURN NEW; END;
