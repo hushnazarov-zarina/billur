@@ -218,7 +218,7 @@ export default function ProductionPage() {
                       {order.client} • {order.model}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                  {order.quantity.toLocaleString()} pcs
+               {order.quantity.toLocaleString()} pcs • {order.productionLine ?? "Line belgilanmagan"}
                     </p>
                   </div>
                   <div className="text-right space-y-2">
