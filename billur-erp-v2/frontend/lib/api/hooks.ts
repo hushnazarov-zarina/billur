@@ -323,23 +323,27 @@ export interface UiScanLog {
   error?: string;
 }
 
-const rows: any[] = await api.get('/api/qr/scans?limit=100');
+export function useScanLogs() {
+  return useQuery({
+    queryKey: ['scanLogs'],
+    queryFn: async () => {
+      const rows: any[] = await api.get('/api/qr/scans?limit=100');
 
-return rows.map(s => ({
-  id: String(s.id),
-  timestamp: s.scanned_at,
-  workerId: s.employee_code || '',
-  workerName: s.worker_name || '',
-  orderId: s.order_code || '',
-  boxId: s.box_id || s.boxId || s.qr_code || s.qrCode || s.box_code || '',
-  stage: s.stage_name || s.stage || '',
-  action: s.scan_type,
-  quantity: s.qty || 0,
-  status: s.is_suspicious && !s.approved_by ? 'Suspicious'
-        : s.approved_by ? 'Approved' : 'Success',
-  warning: s.warning || s.suspicious_reason || s.reason || '',
-  error: s.error || '',
-}));
+      return rows.map(s => ({
+        id: String(s.id),
+        timestamp: s.scanned_at,
+        workerId: s.employee_code || '',
+        workerName: s.worker_name || '',
+        orderId: s.order_code || '',
+        boxId: s.box_id || s.boxId || s.qr_code || s.qrCode || s.box_code || '',
+        stage: s.stage_name || s.stage || '',
+        action: s.scan_type,
+        quantity: s.qty || 0,
+        status: s.is_suspicious && !s.approved_by ? 'Suspicious'
+              : s.approved_by ? 'Approved' : 'Success',
+        warning: s.warning || s.suspicious_reason || s.reason || '',
+        error: s.error || '',
+      }));
     },
     refetchInterval: 5000,
   });
