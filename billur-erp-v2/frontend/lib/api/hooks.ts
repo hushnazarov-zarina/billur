@@ -313,7 +313,8 @@ export interface UiScanLog {
   timestamp: string;
   workerId: string;
   workerName: string;
-  orderId: string;
+  orderId: string;  
+  boxId?: string;
   stage: string;
   action: string;
   quantity: number;
@@ -331,6 +332,7 @@ export function useScanLogs() {
         workerId: s.employee_code || '',
         workerName: s.worker_name || '',
         orderId: s.order_code || '',
+          boxId: s.box_id || s.boxId || s.qr_code || s.qrCode || s.box_code || '',
         stage: s.stage_name || s.stage || '',
         action: s.scan_type,
         quantity: s.qty || 0,
