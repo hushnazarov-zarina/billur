@@ -451,7 +451,7 @@ export default function QualityPage() {
                         <div>
                           <p className="font-medium">{defect.defectType}</p>
                           <p className="text-sm text-muted-foreground">
-                            {defect.count} occurrences
+                           {defect.quantity} occurrences
                           </p>
                         </div>
                       </div>
