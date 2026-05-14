@@ -15,9 +15,11 @@ CREATE TABLE IF NOT EXISTS permissions (
   id          TEXT PRIMARY KEY,
   resource    TEXT NOT NULL,
   action      TEXT NOT NULL,
+  name_uz     TEXT,
+  name_ru     TEXT,
+  name_en     TEXT,
   description TEXT
 );
-
 CREATE TABLE IF NOT EXISTS role_permissions (
   role_id       TEXT REFERENCES roles(id) ON DELETE CASCADE,
   permission_id TEXT REFERENCES permissions(id) ON DELETE CASCADE,
