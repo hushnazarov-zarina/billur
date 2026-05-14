@@ -115,6 +115,7 @@ export interface UiOrder {
   priority: string;
   deadline: string;
   progress: number;
+  productionLine?: string;
   _real_id: string;
 }
 
