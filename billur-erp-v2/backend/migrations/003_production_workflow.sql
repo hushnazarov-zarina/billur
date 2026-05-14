@@ -2,6 +2,11 @@
 -- Production QR codes with worker lock, START/FINISH scans, piece rates,
 -- payroll entries, worker documents, BoxApp sync queue.
 
+ALTER TABLE permissions
+ADD COLUMN IF NOT EXISTS name_uz TEXT,
+ADD COLUMN IF NOT EXISTS name_ru TEXT,
+ADD COLUMN IF NOT EXISTS name_en TEXT;
+
 -- ── Production QR codes (bichuvdan boshlanadi) ───────────────────────────
 CREATE TABLE IF NOT EXISTS production_qr_codes (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -271,10 +276,6 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
   ('admin', 'boxapp.retry')
 ON CONFLICT DO NOTHING;
 
-ALTER TABLE permissions
-ADD COLUMN IF NOT EXISTS name_uz TEXT,
-ADD COLUMN IF NOT EXISTS name_ru TEXT,
-ADD COLUMN IF NOT EXISTS name_en TEXT;
 
 -- ── Trigger to keep updated_at fresh ─────────────────────────────────────
 CREATE OR REPLACE FUNCTION trg_updated_at() RETURNS TRIGGER AS $$
