@@ -440,7 +440,7 @@ export default function QualityPage() {
                 <div className="space-y-4">
                   {qualityDefects.map((defect, index) => (
                     <div
-                      key={defect.type}
+                      key={defect.defectType}
                       className="flex items-center justify-between p-3 rounded-lg border"
                     >
                       <div className="flex items-center gap-3">
@@ -449,7 +449,7 @@ export default function QualityPage() {
                           style={{ backgroundColor: defectColors[index] }}
                         />
                         <div>
-                          <p className="font-medium">{defect.type}</p>
+                          <p className="font-medium">{defect.defectType}</p>
                           <p className="text-sm text-muted-foreground">
                             {defect.count} occurrences
                           </p>
